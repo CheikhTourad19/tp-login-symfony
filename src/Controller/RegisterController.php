@@ -28,6 +28,7 @@ final class RegisterController extends AbstractController
         $prenom= $request->request->get('prenom');
         $password = $request->request->get('password');
         $confirmPassword = $request->request->get('confirm_password');
+        $birthday = $request->request->get('birthday');
 
 
         // Vérification si les mots de passe correspondent
@@ -41,7 +42,12 @@ final class RegisterController extends AbstractController
         $user->setNom($nom);
         $user->setPrenom($prenom);
         $user->setPassword($password);  // Ici on ne fait pas de hashage, c'est juste pour simplification
-
+        $birthdayDate = \DateTime::createFromFormat('Y-m-d', $birthday); // Convertir la chaîne en DateTime
+        $user->setBirthday($birthdayDate);
+        if (!$birthdayDate) {
+            $this->addFlash('error', 'Format de date invalide');
+            return $this->redirectToRoute('app_register');
+        }
         $entityManager->persist($user);
         $entityManager->flush();
         // Message de succès

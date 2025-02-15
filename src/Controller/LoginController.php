@@ -8,8 +8,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
+
 final class LoginController extends AbstractController
 {
+
+
     #[Route('/', name: 'app_login')]
     public function index(): Response
     {
@@ -30,7 +34,12 @@ final class LoginController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         else{
-            return $this->redirectToRoute('app_home',['user'=>$user]);
+            $fete=false;
+            $currentDate = new \DateTime();
+            if($user->getBirthday()->format('d-m-Y')== $currentDate->format('d-m-Y')){
+                $fete=true;
+            }
+            return $this->redirectToRoute('app_home',['nom'=>$user->getNom(),'prenom'=>$user->getPrenom(),'birthday'=>$user->getBirthday(),'fete'=>$fete]);
         }
 
     }
